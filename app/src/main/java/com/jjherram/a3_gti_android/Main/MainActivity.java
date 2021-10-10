@@ -1,5 +1,5 @@
 
-package com.jjherram.a3_gti_android;
+package com.jjherram.a3_gti_android.Main;
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------
 
@@ -12,7 +12,6 @@ import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
-import android.os.ParcelUuid;
 import android.util.Log;
 import android.view.View;
 
@@ -20,8 +19,9 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.jjherram.a3_gti_android.R;
+
 import java.util.List;
-import java.util.UUID;
 
 // ------------------------------------------------------------------
 // ------------------------------------------------------------------

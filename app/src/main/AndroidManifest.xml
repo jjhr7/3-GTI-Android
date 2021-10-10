@@ -3,7 +3,6 @@
     package="com.jjherram.a3_gti_android">
 
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
-
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -22,7 +21,10 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.3GTIAndroid">
         <activity
-            android:name=".MainActivity"
+            android:name=".Main.Service.MainActivityService"
+            android:exported="true"/>
+        <activity
+            android:name=".Main.MainActivity"
             android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -30,6 +32,7 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <service android:name=".Main.Service.ServicioEscucharBeacons" />
     </application>
 
 </manifest>
