@@ -1,12 +1,13 @@
-package com.jjherram.a3_gti_android.Service;
+package com.jjherram.a3_gti_android.Main.Service;
 
 import android.app.IntentService;
 import android.app.Service;
 import android.content.Intent;
 import android.util.Log;
+
 import static android.app.Service.START_STICKY;
 
-public class ServicioEscucharBeacons extends IntentService{
+public class ServicioEscucharBeacons extends IntentService {
 
     // ---------------------------------------------------------------------------------------------
     // ---------------------------------------------------------------------------------------------
@@ -110,10 +111,8 @@ public class ServicioEscucharBeacons extends IntentService{
         Log.d(ETIQUETA_LOG, " ServicioEscucharBeacons.onHandleItent: termina");
 
     }
-
 } // class
 // -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------
 // -------------------------------------------------------------------------------------------------
-

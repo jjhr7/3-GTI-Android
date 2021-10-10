@@ -1,4 +1,4 @@
-package com.jjherram.a3_gti_android.Service;
+package com.jjherram.a3_gti_android.Main.Service;
 
 import androidx.appcompat.app.AppCompatActivity;
 
@@ -11,8 +11,8 @@ import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
 
-public class MainActivityService extends AppCompatActivity{
 
+public class MainActivityService extends AppCompatActivity{
     // ---------------------------------------------------------------------------------------------
     // ---------------------------------------------------------------------------------------------
     private static final String ETIQUETA_LOG = ">>>>";
@@ -64,5 +64,4 @@ public class MainActivityService extends AppCompatActivity{
         Log.d(ETIQUETA_LOG, " MainActivity.constructor : empieza");
         Log.d(ETIQUETA_LOG, " MainActivity.constructor : acaba");
     }
-
 }
