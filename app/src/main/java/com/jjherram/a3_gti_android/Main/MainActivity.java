@@ -4,12 +4,16 @@ package com.jjherram.a3_gti_android.Main;
 // ------------------------------------------------------------------
 
 import android.Manifest;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.le.BluetoothLeScanner;
 import android.bluetooth.le.ScanCallback;
 import android.bluetooth.le.ScanFilter;
 import android.bluetooth.le.ScanResult;
+import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
 import android.util.Log;
@@ -19,6 +23,7 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 
+import com.jjherram.a3_gti_android.Main.Service.ServicioEscucharBeacons;
 import com.jjherram.a3_gti_android.R;
 
 import java.util.List;
@@ -33,6 +38,9 @@ public class MainActivity extends AppCompatActivity {
     private static final String ETIQUETA_LOG = ">>>>";
 
     private static final int CODIGO_PETICION_PERMISOS = 11223344;
+    private static final int SOLICITUD_PERMISO_LOCALIZACION = 1234;
+
+    private Intent intentDelServicio = null;
 
     // --------------------------------------------------------------
     // --------------------------------------------------------------
@@ -127,50 +135,25 @@ public class MainActivity extends AppCompatActivity {
 
     // --------------------------------------------------------------
     // --------------------------------------------------------------
-    private void buscarEsteDispositivoBTLE(final String dispositivoBuscado ) {
+    private void buscarEsteDispositivoBTLE(final String dispositivo ) {
         Log.d(ETIQUETA_LOG, " buscarEsteDispositivoBTLE(): empieza ");
 
         Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): instalamos scan callback ");
-
-
-        // super.onScanResult(ScanSettings.SCAN_MODE_LOW_LATENCY, result); para ahorro de energía
-
-        this.callbackDelEscaneo = new ScanCallback() {
-            @Override
-            public void onScanResult( int callbackType, ScanResult resultado ) {
-                super.onScanResult(callbackType, resultado);
-                Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): onScanResult() ");
-
-                mostrarInformacionDispositivoBTLE( resultado );
-            }
-
-            @Override
-            public void onBatchScanResults(List<ScanResult> results) {
-                super.onBatchScanResults(results);
-                Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): onBatchScanResults() ");
-
-            }
-
-            @Override
-            public void onScanFailed(int errorCode) {
-                super.onScanFailed(errorCode);
-                Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): onScanFailed() ");
-
-            }
-        };
-
-        ScanFilter sf = new ScanFilter.Builder().setDeviceName( dispositivoBuscado ).build();
-
-        Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): empezamos a escanear buscando: " + dispositivoBuscado );
-        //Log.d(ETIQUETA_LOG, "  buscarEsteDispositivoBTLE(): empezamos a escanear buscando: " + dispositivoBuscado
-          //      + " -> " + Utilidades.stringToUUID( dispositivoBuscado ) );
-
-        this.elEscanner.startScan( this.callbackDelEscaneo );
+        this.intentDelServicio.putExtra("dispositivo", dispositivo);
+        startService(intentDelServicio);
     } // ()
 
     // --------------------------------------------------------------
     // --------------------------------------------------------------
     private void detenerBusquedaDispositivosBTLE() {
+
+        if (this.intentDelServicio ==  null)
+            return;
+
+        stopService(this.intentDelServicio);
+        this.intentDelServicio = null;
+
+        Log.d(ETIQUETA_LOG, "Se ha pulsado el boton deneter del servicio");
 
         if ( this.callbackDelEscaneo == null ) {
             return;
@@ -194,8 +177,18 @@ public class MainActivity extends AppCompatActivity {
         Log.d(ETIQUETA_LOG, " boton nuestro dispositivo BTLE Pulsado" );
         //this.buscarEsteDispositivoBTLE( Utilidades.stringToUUID( "EPSG-GTI-PROY-3A" ) );
 
+        if (this.intentDelServicio != null)
+            return;
+
+        Log.d(ETIQUETA_LOG, "Se va a arrancar el servicio");
+
+        this.intentDelServicio = new Intent(this, ServicioEscucharBeacons.class);
+
+        this.intentDelServicio.putExtra("tiempoDeEspera", (long) 5000);
         //this.buscarEsteDispositivoBTLE( "EPSG-GTI-PROY-3A" );
-        this.buscarEsteDispositivoBTLE( "fistro" );
+        this.buscarEsteDispositivoBTLE( "John-HR-GTI3A" );
+
+        Log.d(ETIQUETA_LOG, "El botón arrancar servicio ha sido pulsado");
 
     } // ()
 
@@ -250,6 +243,24 @@ public class MainActivity extends AppCompatActivity {
     } // ()
 
 
+    public static void solicitarPermiso(final String permiso, String
+            justificacion, final int requestCode, final Activity actividad) {
+        if (ActivityCompat.shouldShowRequestPermissionRationale(actividad,
+                permiso)){
+            new AlertDialog.Builder(actividad)
+                    .setTitle("Solicitud de permiso")
+                    .setMessage(justificacion)
+                    .setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int whichButton) {
+                            ActivityCompat.requestPermissions(actividad,
+                                    new String[]{permiso}, requestCode);
+                        }}).show();
+        } else {
+            ActivityCompat.requestPermissions(actividad,
+                    new String[]{permiso}, requestCode);
+        }
+    }
+
     // --------------------------------------------------------------
     // --------------------------------------------------------------
     @Override
@@ -262,6 +273,13 @@ public class MainActivity extends AppCompatActivity {
         inicializarBlueTooth();
 
         Log.d(ETIQUETA_LOG, " onCreate(): termina ");
+
+        if(ActivityCompat.checkSelfPermission(this, Manifest.permission.
+                ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
+            solicitarPermiso(Manifest.permission.ACCESS_FINE_LOCATION,
+                    "Sin el permiso localización no puedo mostrar la distancia"+
+                            " a los lugares.", SOLICITUD_PERMISO_LOCALIZACION, this);
+        }
 
     } // onCreate()
 

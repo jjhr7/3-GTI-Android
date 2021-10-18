@@ -7,13 +7,13 @@
     android:layout_height="match_parent"
     tools:context=".Main.MainActivity">
 
-    <Button
+    <!--<Button
         android:id="@+id/botonBuscarDispositivosBTLE"
         android:text="Buscaaar Dispositivos BTLE nou 4"
         android:onClick="botonBuscarDispositivosBTLEPulsado"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        />
+        />-->
 
     <Button
         android:id="@+id/botonDetenerBusquedaDispositivosBTLE"
